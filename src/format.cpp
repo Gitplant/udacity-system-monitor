@@ -4,8 +4,19 @@
 
 using std::string;
 
-// TODO: Complete this helper function
+// DONE: Complete this helper function
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
 // REMOVE: [[maybe_unused]] once you define the function
-string Format::ElapsedTime(long seconds[[maybe_unused]]) { return string(); }
+string Format::ElapsedTime(long seconds) {
+    long int hh = seconds / 60 / 60;
+    long int mm = (seconds - hh * 60 * 60) / 60;
+    long int ss = seconds - hh * 60 * 60 - mm * 60;
+    string elapsed_time = Format::LeadingZeros(hh) + ":" + Format::LeadingZeros(mm) + ":" + Format::LeadingZeros(ss);
+    return elapsed_time; }
+
+string Format::LeadingZeros(long int number){
+    std::string str_number = std::to_string(number);
+    std::string formattedText = std::string(2 - str_number.length(), '0') + str_number;
+    return formattedText;
+}

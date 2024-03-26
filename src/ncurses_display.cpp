@@ -48,9 +48,7 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
       window, ++row, 2,
       ("Running Processes: " + to_string(system.RunningProcesses())).c_str());
   mvwprintw(window, ++row, 2,
-            // TODO personal: Uncomment ElapsedTime
-            // ("Up Time: " + Format::ElapsedTime(system.UpTime())).c_str());
-            ("Up Time: " + to_string(system.UpTime())).c_str());
+            ("Up Time: " + Format::ElapsedTime(system.UpTime())).c_str());
   wrefresh(window);
 }
 
