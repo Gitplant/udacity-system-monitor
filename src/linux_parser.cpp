@@ -10,6 +10,23 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+/* Read a value from a stream who's lines are constructed as:
+name value possible_more_values.*/
+ string GetValueFromStream(std::ifstream& stream, string name){
+  string line;
+  string key, value;
+  if (stream.is_open()) {
+      while (std::getline(stream, line)) {
+        std::istringstream linestream(line);
+        linestream >> key >> value;
+        if (key == name){
+          return value;
+        }
+      }
+  }
+
+  return 0;
+ }
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
@@ -72,21 +89,12 @@ float LinuxParser::MemoryUtilization() {
   string key, value;
   long int memTotal, memFree;
   float memPercentage;
+
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
 
-  if (stream.is_open()) {
-    while (std::getline(stream, line)) {
-          std::istringstream linestream(line);
-          linestream >> key >> value;
-          if (key == "MemTotal:") {
-            memTotal = std::stoi(value);
-          }
-          else if (key == "MemFree:"){
-            memFree = std::stoi(value);
-          }
-        }
+  memTotal = std::stoi(GetValueFromStream(stream, "MemTotal:"));
+  memFree = std::stoi(GetValueFromStream(stream, "MemFree:"));
   memPercentage = 1 - (static_cast<float>(memFree) / memTotal);
-  }
   return memPercentage; }
 
 // DONE: Read and return the system uptime
@@ -118,27 +126,10 @@ long LinuxParser::IdleJiffies() { return 0; }
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { return {}; }
 
-//TODO (personal): move this to utils file
- string GetValueFromStream(std::ifstream stream, string name){
-  string line;
-  string key, value;
-  if (stream.is_open()) {
-      while (std::getline(stream, line)) {
-        std::istringstream linestream(line);
-        linestream >> key >> value;
-        if (key == name){
-          return value;
-        }
-      }
-  }
-
-  return 0;
- }
-
 // DONE: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
   std::ifstream stream(kProcDirectory + kStatFilename);
-  string nr_processes_str = GetValueFromStream(std::move(stream), "processes");
+  string nr_processes_str = GetValueFromStream(stream, "processes");
   long int nr_processes = std::stoi(nr_processes_str);
   return nr_processes;
  }
