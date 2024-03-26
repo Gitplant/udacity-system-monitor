@@ -28,8 +28,8 @@ vector<Process>& System::Processes() {
     }
     return processes_; }
 
-// TODO: Return the system's kernel identifier (string)
-std::string System::Kernel() { return string(); }
+// DONE: Return the system's kernel identifier (string)
+std::string System::Kernel() { return LinuxParser::Kernel(); }
 
 // DONE: Return the system's memory utilization
 float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
