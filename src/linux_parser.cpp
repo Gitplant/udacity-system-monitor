@@ -10,6 +10,10 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+//Temp
+#include <iostream>
+using std::cout;
+
 /* Read a value from a stream who's lines are constructed as:
 name value possible_more_values.*/
  string GetValueFromStream(std::ifstream& stream, string name){
@@ -17,12 +21,15 @@ name value possible_more_values.*/
   string key, value;
   if (stream.is_open()) {
       while (std::getline(stream, line)) {
+        // Temp
+        // std::cout << line << "\n";
         std::istringstream linestream(line);
         linestream >> key >> value;
         if (key == name){
           return value;
         }
       }
+      throw std::invalid_argument("Could not find key " + name + "in stream.");
   }
 
   return 0;
@@ -134,8 +141,13 @@ int LinuxParser::TotalProcesses() {
   return nr_processes;
  }
 
-// TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+// DONE: Read and return the number of running processes
+int LinuxParser::RunningProcesses() {
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  string nr_running_processes_str = GetValueFromStream(stream, "procs_running");
+  long int nr_running_processes = std::stoi(nr_running_processes_str);
+  return nr_running_processes;
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
