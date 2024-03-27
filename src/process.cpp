@@ -28,7 +28,7 @@ string Process::Command() { return string(); }
 // TODO: Return this process's memory utilization
 string Process::Ram() { return string(); }
 
-// TODO: Return the user (name) that generated this process
+// DONE: Return the user (name) that generated this process
 string Process::User() { return LinuxParser::User(this->pid_); }
 
 // TODO: Return the age of this process (in seconds)

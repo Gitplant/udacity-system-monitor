@@ -196,8 +196,25 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
 string LinuxParser::User(int pid) {
 
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
-  string user = GetValueFromStream(stream, "Uid:");
-  return user; }
+  string user_id = GetValueFromStream(stream, "Uid:");
+
+  // Get user name from user id
+  string line, user, x, key;
+  std::ifstream stream2(kPasswordPath);
+  if (stream.is_open()) {
+    while (std::getline(stream2, line)) {
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
+      linestream >> user >> x >> key;
+      if (key == user_id){
+        return user;
+      }
+    }
+    throw std::invalid_argument("Could not find user_id " + user_id + "in stream.\n");
+  }
+
+
+  return string(); }
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
