@@ -103,17 +103,17 @@ float LinuxParser::MemoryUtilization() {
   memFree = std::stoi(GetValueFromStream(stream, "MemFree:"));
   memPercentage = 1 - (static_cast<float>(memFree) / memTotal);
   return memPercentage; }
-
 // DONE: Read and return the system uptime
-long LinuxParser::UpTime() {
+float LinuxParser::UpTime() {
   string line;
-  long up_time, idle_time;
+  float up_time, idle_time;
   std::ifstream stream(kProcDirectory + kUptimeFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> up_time >> idle_time;
   }
+
   return up_time;
 }
 
@@ -215,6 +215,27 @@ string LinuxParser::User(int pid) {
 
 
   return string(); }
+
+// Read Process Process statusses for cpu utilization
+vector<string> LinuxParser::ProcessStatusses(int pid) {
+
+  string line;
+  std::vector<std::string> process_status;
+
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+
+  if (stream.is_open()) {
+    std::string token;
+    while (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+
+      while (std::getline(linestream, token, ' ')) {
+          process_status.push_back(token);
+      }
+    }
+  }
+
+  return process_status; }
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function

@@ -20,7 +20,7 @@ const std::string kPasswordPath{"/etc/passwd"};
 
 // System
 float MemoryUtilization();
-long UpTime();
+float UpTime();
 std::vector<int> Pids();
 int TotalProcesses();
 int RunningProcesses();
@@ -46,7 +46,17 @@ long ActiveJiffies();
 long ActiveJiffies(int pid);
 long IdleJiffies();
 
+// Process states
+enum ProcessStates {
+  kUTime_ = 13,
+  kSTime_ = 14,
+  kCUTime_ = 15,
+  kCSTime_ = 16,
+  kStartTime_ = 21
+};
+
 // Processes
+std::vector<std::string> ProcessStatusses(int pid);
 std::string Command(int pid);
 std::string Ram(int pid);
 std::string Uid(int pid);

@@ -14,6 +14,10 @@ using std::size_t;
 using std::string;
 using std::vector;
 
+//Temp
+#include <iostream>
+using std::cout;
+
 // TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
@@ -22,9 +26,10 @@ vector<Process>& System::Processes() {
 
     vector<int> pids = LinuxParser::Pids();
     for (int pid: pids){
-            Process process = Process();
-            process.SetPid(pid);
-            processes_.push_back(process);
+        Process process = Process();
+        process.SetPid(pid);
+        process.SetUptime(LinuxParser::UpTime());
+        processes_.push_back(process);
     }
     return processes_; }
 
@@ -44,4 +49,5 @@ int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 // DONE: Return the number of seconds since the system started running
-long int System::UpTime() { return  LinuxParser::UpTime(); }
+
+long int System::UpTime() { return  static_cast<long int>(LinuxParser::UpTime()); }
