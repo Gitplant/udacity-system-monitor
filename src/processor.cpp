@@ -15,17 +15,14 @@ using std::cout;
 float Processor::Utilization() {
     vector<string> cpu_line = LinuxParser::CpuUtilization();
 
-    //TODO (personal): Figure out if this can be done with enums.
-    int user = std::stoi(cpu_line[0]);
-    int nice = std::stoi(cpu_line[1]);
-    int system = std::stoi(cpu_line[2]);
-    int idle = std::stoi(cpu_line[3]);
-    int iowait = std::stoi(cpu_line[4]);
-    int irq = std::stoi(cpu_line[5]);
-    int softirq = std::stoi(cpu_line[6]);
-    int steal = std::stoi(cpu_line[7]);
-    // int guest = std::stoi(cpu_line[8]);
-    // int guest_nice = std::stoi(cpu_line[9]);
+    int user = std::stoi(cpu_line[LinuxParser::CPUStates::kUser_]);
+    int nice = std::stoi(cpu_line[LinuxParser::CPUStates::kNice_]);
+    int system = std::stoi(cpu_line[LinuxParser::CPUStates::kSystem_]);
+    int idle = std::stoi(cpu_line[LinuxParser::CPUStates::kIdle_]);
+    int iowait = std::stoi(cpu_line[LinuxParser::CPUStates::kIOwait_]);
+    int irq = std::stoi(cpu_line[LinuxParser::CPUStates::kIRQ_]);
+    int softirq = std::stoi(cpu_line[LinuxParser::CPUStates::kSoftIRQ_]);
+    int steal = std::stoi(cpu_line[LinuxParser::CPUStates::kSteal_]);
 
     // Current numbers:
     int Idle = idle + iowait;

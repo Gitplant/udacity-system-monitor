@@ -145,7 +145,17 @@ vector<string> LinuxParser::CpuUtilization() {
       linestream >> key;
       if (key == "cpu"){
         linestream >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
-        vector<string> cpu{user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice};
+        vector<string> cpu(10);
+        cpu[LinuxParser::CPUStates::kUser_] = user;
+        cpu[LinuxParser::CPUStates::kNice_] = nice;
+        cpu[LinuxParser::CPUStates::kSystem_] = system;
+        cpu[LinuxParser::CPUStates::kIdle_] = idle;
+        cpu[LinuxParser::CPUStates::kIOwait_] = iowait;
+        cpu[LinuxParser::CPUStates::kIRQ_] = irq;
+        cpu[LinuxParser::CPUStates::kSoftIRQ_] = softirq;
+        cpu[LinuxParser::CPUStates::kSteal_] = steal;
+        cpu[LinuxParser::CPUStates::kGuest_] = guest;
+        cpu[LinuxParser::CPUStates::kGuestNice_] = guest_nice;
         return cpu;
       }
     }
