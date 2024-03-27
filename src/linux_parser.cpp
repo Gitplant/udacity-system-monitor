@@ -29,7 +29,7 @@ name value possible_more_values.*/
           return value;
         }
       }
-      throw std::invalid_argument("Could not find key " + name + "in stream.");
+      throw std::invalid_argument("Could not find key " + name + "in stream.\n");
   }
 
   return 0;
@@ -192,9 +192,12 @@ string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
 
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+// DONE: Read and return the user associated with a process
+string LinuxParser::User(int pid) {
+
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
+  string user = GetValueFromStream(stream, "Uid:");
+  return user; }
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
