@@ -29,8 +29,13 @@ vector<Process>& System::Processes() {
         Process process = Process();
         process.SetPid(pid);
         process.SetUptime(LinuxParser::UpTime());
+        process.SetCpuUtilization();
         processes_.push_back(process);
     }
+
+    // Sort the processes by cpu utilization
+    std::sort(processes_.begin(), processes_.end());
+
     return processes_; }
 
 // DONE: Return the system's kernel identifier (string)

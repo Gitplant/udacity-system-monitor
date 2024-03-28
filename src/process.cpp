@@ -29,7 +29,7 @@ void Process::SetUptime(float uptime){
 }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() {
+void Process::SetCpuUtilization() {
 
     vector<string> process_statusses = LinuxParser::ProcessStatusses(this->pid_);
 
@@ -40,9 +40,10 @@ float Process::CpuUtilization() {
     int total_time = utime + stime;
     int start_time = std::stoi(process_statusses[LinuxParser::ProcessStates::kStartTime_]);
     float elapsed_time = this->uptime_ - (static_cast<float>(start_time) / Hz);
-    float cpu_usage = ((static_cast<float>(total_time) / Hz) / elapsed_time);
+    this->cpu_usage_ = ((static_cast<float>(total_time) / Hz) / elapsed_time);
+    }
 
-    return cpu_usage; }
+float Process::GetCpuUtilization(){ return this->cpu_usage_; };
 
 // TODO: Return the command that generated this process
 string Process::Command() { return string(); }
@@ -56,6 +57,6 @@ string Process::User() { return LinuxParser::User(this->pid_); }
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime() { return 0; }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+// DONE: Overload the "less than" comparison operator for Process objects
+bool Process::operator<(Process const& a) const {
+        return a.cpu_usage_ < cpu_usage_; }
