@@ -6,6 +6,9 @@
 #include <string>
 
 namespace LinuxParser {
+// Constants
+extern long int clock_frequency;
+
 // Paths
 const std::string kProcDirectory{"/proc/"};
 const std::string kCmdlineFilename{"/cmdline"};
@@ -62,6 +65,10 @@ std::string Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
 long int UpTime(int pid);
+
+// Utils
+std::vector<std::string> StringToVector(std::string line, char delimeter);
+
 };  // namespace LinuxParser
 
 #endif

@@ -33,14 +33,12 @@ void Process::SetCpuUtilization() {
 
     vector<string> process_statusses = LinuxParser::ProcessStatusses(this->pid_);
 
-    long Hz = sysconf(_SC_CLK_TCK);
-
     int stime = std::stoi(process_statusses[LinuxParser::ProcessStates::kSTime_]);
     int utime = std::stoi(process_statusses[LinuxParser::ProcessStates::kUTime_]);
     int total_time = utime + stime;
     int start_time = std::stoi(process_statusses[LinuxParser::ProcessStates::kStartTime_]);
-    float elapsed_time = this->uptime_ - (static_cast<float>(start_time) / Hz);
-    this->cpu_usage_ = ((static_cast<float>(total_time) / Hz) / elapsed_time);
+    float elapsed_time = this->uptime_ - (static_cast<float>(start_time) / LinuxParser::clock_frequency);
+    this->cpu_usage_ = ((static_cast<float>(total_time) / LinuxParser::clock_frequency) / elapsed_time);
     }
 
 float Process::GetCpuUtilization(){ return this->cpu_usage_; };
@@ -55,7 +53,7 @@ string Process::Ram() { return LinuxParser::Ram(this->pid_); }
 string Process::User() { return LinuxParser::User(this->pid_); }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
+long int Process::UpTime() { return LinuxParser::UpTime(this->pid_); }
 
 // DONE: Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {

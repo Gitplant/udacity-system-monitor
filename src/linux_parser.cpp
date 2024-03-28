@@ -14,9 +14,12 @@ using std::vector;
 #include <iostream>
 using std::cout;
 
+// Constants
+long int LinuxParser::clock_frequency = sysconf(_SC_CLK_TCK);
+
 /* Read a value from a stream who's lines are constructed as:
 name value possible_more_values.*/
- string GetValueFromStream(std::ifstream& stream, string name){
+string GetValueFromStream(std::ifstream& stream, string name){
   string line;
   string key, value;
   if (stream.is_open()) {
@@ -36,6 +39,7 @@ name value possible_more_values.*/
 
   return 0;
  }
+
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
@@ -232,18 +236,40 @@ vector<string> LinuxParser::ProcessStatusses(int pid) {
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
 
   if (stream.is_open()) {
-    std::string token;
+    char delimeter = ' ';
     while (std::getline(stream, line)) {
-      std::istringstream linestream(line);
-
-      while (std::getline(linestream, token, ' ')) {
-          process_status.push_back(token);
-      }
+      process_status = LinuxParser::StringToVector(line, delimeter);
     }
   }
 
   return process_status; }
 
-// TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+vector<string> LinuxParser::StringToVector(std::string line, char delimeter){
+
+  std::istringstream linestream(line);
+  std::string token;
+  std::vector<std::string> output;
+  while (std::getline(linestream, token, delimeter)) {
+      output.push_back(token);
+  }
+
+  return output;
+}
+
+// DONE: Read and return the uptime of a process
+long LinuxParser::UpTime(int pid) {
+
+  long uptime;
+  string line;
+  vector<string> stat;
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+  if (stream.is_open()) {
+    char delimeter = ' ';
+    while (std::getline(stream, line)) {
+      stat = LinuxParser::StringToVector(line, delimeter);
+    }
+  }
+  uptime = std::stol(stat[21]) / LinuxParser::clock_frequency;
+
+  return uptime;
+}
