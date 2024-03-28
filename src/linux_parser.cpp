@@ -21,11 +21,13 @@ name value possible_more_values.*/
   string key, value;
   if (stream.is_open()) {
       while (std::getline(stream, line)) {
-        // Temp
-        // std::cout << line << "\n";
         std::istringstream linestream(line);
         linestream >> key >> value;
         if (key == name){
+        // Temp
+        // std::cout << line << "\n";
+        // std::cout << "key = " << key << "\n";
+        // std::cout << "value = " << value << "\n";
           return value;
         }
       }
@@ -184,9 +186,14 @@ int LinuxParser::RunningProcesses() {
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+// DONE: Read and return the memory used by a process
+string LinuxParser::Ram(int pid) {
+
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
+  long int ram = std::stoi(GetValueFromStream(stream, "VmSize:")) / 1000;
+  string ram_str = to_string(ram);
+
+  return ram_str; }
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
