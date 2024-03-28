@@ -15,7 +15,7 @@ using std::vector;
 #include <iostream>
 using std::cout;
 
-// TODO: Return this process's ID
+// DONE: Return this process's ID
 int Process::Pid() {
     return pid_; }
 
@@ -28,7 +28,6 @@ void Process::SetUptime(float uptime){
     uptime_ = uptime;
 }
 
-// TODO: Return this process's CPU utilization
 void Process::SetCpuUtilization() {
 
     vector<string> process_statusses = LinuxParser::ProcessStatusses(this->pid_);
@@ -41,6 +40,7 @@ void Process::SetCpuUtilization() {
     this->cpu_usage_ = ((static_cast<float>(total_time) / LinuxParser::clock_frequency) / elapsed_time);
     }
 
+// DONE: Return this process's CPU utilization
 float Process::GetCpuUtilization(){ return this->cpu_usage_; };
 
 // DONE: Return the command that generated this process
@@ -52,7 +52,7 @@ string Process::Ram() { return LinuxParser::Ram(this->pid_); }
 // DONE: Return the user (name) that generated this process
 string Process::User() { return LinuxParser::User(this->pid_); }
 
-// TODO: Return the age of this process (in seconds)
+// DONE: Return the age of this process (in seconds)
 long int Process::UpTime() { return LinuxParser::UpTime(this->pid_); }
 
 // DONE: Overload the "less than" comparison operator for Process objects

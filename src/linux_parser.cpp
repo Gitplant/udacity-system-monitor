@@ -27,10 +27,6 @@ string GetValueFromStream(std::ifstream& stream, string name){
         std::istringstream linestream(line);
         linestream >> key >> value;
         if (key == name){
-        // Temp
-        // std::cout << line << "\n";
-        // std::cout << "key = " << key << "\n";
-        // std::cout << "value = " << value << "\n";
           return value;
         }
       }
@@ -210,21 +206,24 @@ string LinuxParser::Ram(int pid) {
 
   return ram_str; }
 
-// TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
-
-// DONE: Read and return the user associated with a process
-string LinuxParser::User(int pid) {
+// DONE: Read and return the user ID associated with a process
+string LinuxParser::Uid(int pid) {
 
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
   string user_id = GetValueFromStream(stream, "Uid:");
 
+  return user_id; }
+
+// DONE: Read and return the user associated with a process
+string LinuxParser::User(int pid) {
+
+  string user_id = LinuxParser::Uid(pid);
+
   // Get user name from user id
   string line, user, x, key;
-  std::ifstream stream2(kPasswordPath);
+  std::ifstream stream(kPasswordPath);
   if (stream.is_open()) {
-    while (std::getline(stream2, line)) {
+    while (std::getline(stream, line)) {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
       linestream >> user >> x >> key;
