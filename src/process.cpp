@@ -43,8 +43,8 @@ void Process::SetCpuUtilization() {
 
 float Process::GetCpuUtilization(){ return this->cpu_usage_; };
 
-// TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+// DONE: Return the command that generated this process
+string Process::Command() { return LinuxParser::Command(this->pid_); }
 
 // DONE: Return this process's memory utilization
 string Process::Ram() { return LinuxParser::Ram(this->pid_); }

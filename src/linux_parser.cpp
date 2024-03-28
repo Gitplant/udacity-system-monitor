@@ -186,9 +186,20 @@ int LinuxParser::RunningProcesses() {
   return nr_running_processes;
 }
 
-// TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+// DONE: Read and return the command associated with a process
+string LinuxParser::Command(int pid) {
+
+  std::ifstream stream(kProcDirectory + to_string(pid) + kCmdlineFilename);
+  string line, command;
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+      linestream >> command;
+      return command;
+    }
+  }
+
+  return string(); }
 
 // DONE: Read and return the memory used by a process
 string LinuxParser::Ram(int pid) {
@@ -269,7 +280,7 @@ long LinuxParser::UpTime(int pid) {
       stat = LinuxParser::StringToVector(line, delimeter);
     }
   }
-  uptime = std::stol(stat[21]) / LinuxParser::clock_frequency;
+  uptime = std::stol(stat[LinuxParser::ProcessStates::kStartTime_]) / LinuxParser::clock_frequency;
 
   return uptime;
 }
