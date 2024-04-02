@@ -16,6 +16,7 @@ long int LinuxParser::clock_frequency = sysconf(_SC_CLK_TCK);
 /* Read a value from a stream who's lines are constructed as:
 name value possibly_more_values.*/
 string LinuxParser::GetValueFromStream(std::ifstream& stream, string name){
+
   string line;
   string key, value;
   if (stream.is_open()) {
@@ -26,10 +27,9 @@ string LinuxParser::GetValueFromStream(std::ifstream& stream, string name){
           return value;
         }
       }
-      throw std::invalid_argument("Could not find key " + name + "in stream.\n");
   }
 
-  return 0;
+  return string();
  }
 
  // Convert a string line to a vector of strings
@@ -110,10 +110,16 @@ float LinuxParser::MemoryUtilization() {
 
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
 
-  memTotal = std::stoi(LinuxParser::GetValueFromStream(stream, "MemTotal:"));
-  memFree = std::stoi(LinuxParser::GetValueFromStream(stream, "MemFree:"));
+  string memTotal_str = LinuxParser::GetValueFromStream(stream, "MemTotal:");
+  string memFree_str = LinuxParser::GetValueFromStream(stream, "MemFree:");
+  if (memTotal_str == string() || memFree_str == string()){
+    return -1.0;
+  }
+  memFree = std::stoi(memFree_str);
+  memTotal = std::stoi(memTotal_str);
   memPercentage = 1 - (static_cast<float>(memFree) / memTotal);
   return memPercentage; }
+
 // DONE: Read and return the system uptime
 float LinuxParser::UpTime() {
   string line;
@@ -157,7 +163,7 @@ vector<string> LinuxParser::CpuUtilization() {
         return cpu;
       }
     }
-    throw std::invalid_argument("Could not find key cpu in stream.");
+    // throw std::invalid_argument("Could not find key cpu in stream.");
   }
 
   return {}; }
@@ -166,7 +172,13 @@ vector<string> LinuxParser::CpuUtilization() {
 int LinuxParser::TotalProcesses() {
   std::ifstream stream(kProcDirectory + kStatFilename);
   string nr_processes_str = LinuxParser::GetValueFromStream(stream, "processes");
-  long int nr_processes = std::stoi(nr_processes_str);
+  long int nr_processes;
+  if (nr_processes_str != string()){
+    nr_processes = std::stoi(nr_processes_str);
+  }
+  else{
+    nr_processes = -1;
+  }
   return nr_processes;
  }
 
@@ -174,7 +186,13 @@ int LinuxParser::TotalProcesses() {
 int LinuxParser::RunningProcesses() {
   std::ifstream stream(kProcDirectory + kStatFilename);
   string nr_running_processes_str = LinuxParser::GetValueFromStream(stream, "procs_running");
-  long int nr_running_processes = std::stoi(nr_running_processes_str);
+  long int nr_running_processes;
+  if (nr_running_processes_str != string()){
+    nr_running_processes = std::stoi(nr_running_processes_str);
+  }
+  else{
+    nr_running_processes = -1;
+  }
   return nr_running_processes;
 }
 
@@ -196,10 +214,16 @@ string LinuxParser::Command(int pid) {
 // DONE: Read and return the memory used by a process
 string LinuxParser::Ram(int pid) {
 
+  string ram_str;
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
-  long int ram = std::stoi(LinuxParser::GetValueFromStream(stream, "VmSize:")) / 1000;
-  string ram_str = to_string(ram);
-
+  string ram_output = LinuxParser::GetValueFromStream(stream, "VmSize:");
+  if (ram_output != string()){
+    long int ram = std::stoi(ram_output) / 1000;
+    ram_str = to_string(ram);
+  }
+  else {
+    ram_str = string();
+  }
   return ram_str; }
 
 // DONE: Read and return the user ID associated with a process
@@ -214,20 +238,20 @@ string LinuxParser::Uid(int pid) {
 string LinuxParser::User(int pid) {
 
   string user_id = LinuxParser::Uid(pid);
-
-  // Get user name from user id
-  string line, user, x, key;
-  std::ifstream stream(kPasswordPath);
-  if (stream.is_open()) {
-    while (std::getline(stream, line)) {
-      std::replace(line.begin(), line.end(), ':', ' ');
-      std::istringstream linestream(line);
-      linestream >> user >> x >> key;
-      if (key == user_id){
-        return user;
+  if (user_id != string()){
+    // Get user name from user id
+    string line, user, x, key;
+    std::ifstream stream(kPasswordPath);
+    if (stream.is_open()) {
+      while (std::getline(stream, line)) {
+        std::replace(line.begin(), line.end(), ':', ' ');
+        std::istringstream linestream(line);
+        linestream >> user >> x >> key;
+        if (key == user_id){
+          return user;
+        }
       }
     }
-    throw std::invalid_argument("Could not find user_id " + user_id + "in stream.\n");
   }
 
 
