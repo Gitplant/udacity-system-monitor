@@ -38,8 +38,7 @@ float Processor::Utilization() {
     }
 
     // Set previous attributes for next iteration:
-    int PrevNonIdle = user + nice + system + irq + softirq + steal;
-    this->prev_total_ = Idle + PrevNonIdle;
+    this->prev_total_ = Idle + NonIdle;
     this->prev_idle_ = Idle;
 
     return cpu_percentage; }
