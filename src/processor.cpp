@@ -6,11 +6,6 @@
 using std::vector;
 using std::string;
 
-//Temp
-#include <iostream>
-using std::cout;
-
-
 // DONE: Return the aggregate CPU utilization
 float Processor::Utilization() {
     vector<string> cpu_line = LinuxParser::CpuUtilization();

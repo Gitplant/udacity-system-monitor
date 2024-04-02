@@ -10,16 +10,12 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-//Temp
-#include <iostream>
-using std::cout;
-
 // Constants
 long int LinuxParser::clock_frequency = sysconf(_SC_CLK_TCK);
 
 /* Read a value from a stream who's lines are constructed as:
-name value possible_more_values.*/
-string GetValueFromStream(std::ifstream& stream, string name){
+name value possibly_more_values.*/
+string LinuxParser::GetValueFromStream(std::ifstream& stream, string name){
   string line;
   string key, value;
   if (stream.is_open()) {
@@ -35,6 +31,19 @@ string GetValueFromStream(std::ifstream& stream, string name){
 
   return 0;
  }
+
+ // Convert a string line to a vector of strings
+vector<string> LinuxParser::StringToVector(std::string line, char delimeter){
+
+  std::istringstream linestream(line);
+  std::string token;
+  std::vector<std::string> output;
+  while (std::getline(linestream, token, delimeter)) {
+      output.push_back(token);
+  }
+
+  return output;
+}
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
@@ -101,8 +110,8 @@ float LinuxParser::MemoryUtilization() {
 
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
 
-  memTotal = std::stoi(GetValueFromStream(stream, "MemTotal:"));
-  memFree = std::stoi(GetValueFromStream(stream, "MemFree:"));
+  memTotal = std::stoi(LinuxParser::GetValueFromStream(stream, "MemTotal:"));
+  memFree = std::stoi(LinuxParser::GetValueFromStream(stream, "MemFree:"));
   memPercentage = 1 - (static_cast<float>(memFree) / memTotal);
   return memPercentage; }
 // DONE: Read and return the system uptime
@@ -118,19 +127,6 @@ float LinuxParser::UpTime() {
 
   return up_time;
 }
-
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
-
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
-
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
-
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
 
 // DONE: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
@@ -169,7 +165,7 @@ vector<string> LinuxParser::CpuUtilization() {
 // DONE: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
   std::ifstream stream(kProcDirectory + kStatFilename);
-  string nr_processes_str = GetValueFromStream(stream, "processes");
+  string nr_processes_str = LinuxParser::GetValueFromStream(stream, "processes");
   long int nr_processes = std::stoi(nr_processes_str);
   return nr_processes;
  }
@@ -177,7 +173,7 @@ int LinuxParser::TotalProcesses() {
 // DONE: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   std::ifstream stream(kProcDirectory + kStatFilename);
-  string nr_running_processes_str = GetValueFromStream(stream, "procs_running");
+  string nr_running_processes_str = LinuxParser::GetValueFromStream(stream, "procs_running");
   long int nr_running_processes = std::stoi(nr_running_processes_str);
   return nr_running_processes;
 }
@@ -201,7 +197,7 @@ string LinuxParser::Command(int pid) {
 string LinuxParser::Ram(int pid) {
 
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
-  long int ram = std::stoi(GetValueFromStream(stream, "VmSize:")) / 1000;
+  long int ram = std::stoi(LinuxParser::GetValueFromStream(stream, "VmSize:")) / 1000;
   string ram_str = to_string(ram);
 
   return ram_str; }
@@ -210,7 +206,7 @@ string LinuxParser::Ram(int pid) {
 string LinuxParser::Uid(int pid) {
 
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
-  string user_id = GetValueFromStream(stream, "Uid:");
+  string user_id = LinuxParser::GetValueFromStream(stream, "Uid:");
 
   return user_id; }
 
@@ -253,18 +249,6 @@ vector<string> LinuxParser::ProcessStatusses(int pid) {
   }
 
   return process_status; }
-
-vector<string> LinuxParser::StringToVector(std::string line, char delimeter){
-
-  std::istringstream linestream(line);
-  std::string token;
-  std::vector<std::string> output;
-  while (std::getline(linestream, token, delimeter)) {
-      output.push_back(token);
-  }
-
-  return output;
-}
 
 // DONE: Read and return the uptime of a process
 long LinuxParser::UpTime(int pid) {

@@ -11,10 +11,6 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// Temp
-#include <iostream>
-using std::cout;
-
 // DONE: Return this process's ID
 int Process::Pid() {
     return pid_; }

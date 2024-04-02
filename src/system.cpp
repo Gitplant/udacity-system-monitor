@@ -14,10 +14,6 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-//Temp
-#include <iostream>
-using std::cout;
-
 // DONE: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 

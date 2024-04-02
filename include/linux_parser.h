@@ -68,6 +68,7 @@ long int UpTime(int pid);
 
 // Utils
 std::vector<std::string> StringToVector(std::string line, char delimeter);
+std::string GetValueFromStream(std::ifstream& stream, std::string name);
 
 };  // namespace LinuxParser
 
