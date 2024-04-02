@@ -7,7 +7,6 @@ using std::string;
 // DONE: Complete this helper function
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
-// REMOVE: [[maybe_unused]] once you define the function
 string Format::ElapsedTime(long seconds) {
     long int hh = seconds / 60 / 60;
     long int mm = (seconds - hh * 60 * 60) / 60;
