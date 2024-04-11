@@ -16,6 +16,12 @@ string Format::ElapsedTime(long seconds) {
 
 string Format::LeadingZeros(long int number){
     std::string str_number = std::to_string(number);
-    std::string formattedText = std::string(2 - str_number.length(), '0') + str_number;
+    std::string formattedText;
+    if (str_number.length() < 2) {
+        formattedText = std::string(2 - str_number.length(), '0') + str_number;
+    }
+    else {
+        formattedText = str_number;
+    }
     return formattedText;
 }
