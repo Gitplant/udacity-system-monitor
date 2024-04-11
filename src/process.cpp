@@ -28,10 +28,10 @@ void Process::SetCpuUtilization() {
 
     vector<string> process_statusses = LinuxParser::ProcessStatusses(this->pid_);
 
-    int stime = std::stoi(process_statusses[LinuxParser::ProcessStates::kSTime_]);
-    int utime = std::stoi(process_statusses[LinuxParser::ProcessStates::kUTime_]);
-    int total_time = utime + stime;
-    int start_time = std::stoi(process_statusses[LinuxParser::ProcessStates::kStartTime_]);
+    long long stime = std::stoll(process_statusses[LinuxParser::ProcessStates::kSTime_]);
+    long long utime = std::stoll(process_statusses[LinuxParser::ProcessStates::kUTime_]);
+    long long total_time = utime + stime;
+    long long start_time = std::stoll(process_statusses[LinuxParser::ProcessStates::kStartTime_]);
     float elapsed_time = this->uptime_ - (static_cast<float>(start_time) / LinuxParser::clock_frequency);
     this->cpu_usage_ = ((static_cast<float>(total_time) / LinuxParser::clock_frequency) / elapsed_time);
     }

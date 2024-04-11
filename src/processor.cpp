@@ -10,23 +10,23 @@ using std::string;
 float Processor::Utilization() {
     vector<string> cpu_line = LinuxParser::CpuUtilization();
 
-    int user = std::stoi(cpu_line[LinuxParser::CPUStates::kUser_]);
-    int nice = std::stoi(cpu_line[LinuxParser::CPUStates::kNice_]);
-    int system = std::stoi(cpu_line[LinuxParser::CPUStates::kSystem_]);
-    int idle = std::stoi(cpu_line[LinuxParser::CPUStates::kIdle_]);
-    int iowait = std::stoi(cpu_line[LinuxParser::CPUStates::kIOwait_]);
-    int irq = std::stoi(cpu_line[LinuxParser::CPUStates::kIRQ_]);
-    int softirq = std::stoi(cpu_line[LinuxParser::CPUStates::kSoftIRQ_]);
-    int steal = std::stoi(cpu_line[LinuxParser::CPUStates::kSteal_]);
+    long long user = std::stoll(cpu_line[LinuxParser::CPUStates::kUser_]);
+    long long nice = std::stoll(cpu_line[LinuxParser::CPUStates::kNice_]);
+    long long system = std::stoll(cpu_line[LinuxParser::CPUStates::kSystem_]);
+    long long idle = std::stoll(cpu_line[LinuxParser::CPUStates::kIdle_]);
+    long long iowait = std::stoll(cpu_line[LinuxParser::CPUStates::kIOwait_]);
+    long long irq = std::stoll(cpu_line[LinuxParser::CPUStates::kIRQ_]);
+    long long softirq = std::stoll(cpu_line[LinuxParser::CPUStates::kSoftIRQ_]);
+    long long steal = std::stoll(cpu_line[LinuxParser::CPUStates::kSteal_]);
 
     // Current numbers:
-    int Idle = idle + iowait;
-    int NonIdle = user + nice + system + irq + softirq + steal;
-    int Total = Idle + NonIdle;
+    long long Idle = idle + iowait;
+    long long NonIdle = user + nice + system + irq + softirq + steal;
+    long long Total = Idle + NonIdle;
 
     // Percentage:
-    int totald = Total - this->prev_total_;
-    int idled = Idle - this->prev_idle_;
+    long long totald = Total - this->prev_total_;
+    long long idled = Idle - this->prev_idle_;
     float cpu_percentage = 0.0;
     if (totald != 0){
         cpu_percentage = (totald - idled) / static_cast<float>(totald);

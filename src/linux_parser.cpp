@@ -105,7 +105,7 @@ vector<int> LinuxParser::Pids() {
 float LinuxParser::MemoryUtilization() {
   string line;
   string key, value;
-  long int memTotal, memFree;
+  long long memTotal, memFree;
   float memPercentage;
 
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
@@ -115,8 +115,8 @@ float LinuxParser::MemoryUtilization() {
   if (memTotal_str == string() || memFree_str == string()){
     return -1.0;
   }
-  memFree = std::stoi(memFree_str);
-  memTotal = std::stoi(memTotal_str);
+  memFree = std::stoll(memFree_str);
+  memTotal = std::stoll(memTotal_str);
   memPercentage = 1 - (static_cast<float>(memFree) / memTotal);
   return memPercentage; }
 
@@ -172,9 +172,9 @@ vector<string> LinuxParser::CpuUtilization() {
 int LinuxParser::TotalProcesses() {
   std::ifstream stream(kProcDirectory + kStatFilename);
   string nr_processes_str = LinuxParser::GetValueFromStream(stream, "processes");
-  long int nr_processes;
+  long long nr_processes;
   if (nr_processes_str != string()){
-    nr_processes = std::stoi(nr_processes_str);
+    nr_processes = std::stoll(nr_processes_str);
   }
   else{
     nr_processes = -1;
@@ -186,9 +186,9 @@ int LinuxParser::TotalProcesses() {
 int LinuxParser::RunningProcesses() {
   std::ifstream stream(kProcDirectory + kStatFilename);
   string nr_running_processes_str = LinuxParser::GetValueFromStream(stream, "procs_running");
-  long int nr_running_processes;
+  long long nr_running_processes;
   if (nr_running_processes_str != string()){
-    nr_running_processes = std::stoi(nr_running_processes_str);
+    nr_running_processes = std::stoll(nr_running_processes_str);
   }
   else{
     nr_running_processes = -1;
@@ -218,7 +218,7 @@ string LinuxParser::Ram(int pid) {
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatusFilename);
   string ram_output = LinuxParser::GetValueFromStream(stream, "VmSize:");
   if (ram_output != string()){
-    long int ram = std::stoi(ram_output) / 1000;
+    long long ram = std::stoll(ram_output) / 1000;
     ram_str = to_string(ram);
   }
   else {
