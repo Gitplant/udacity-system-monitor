@@ -28,6 +28,7 @@ string LinuxParser::GetValueFromStream(std::ifstream& stream, string name){
         }
       }
   }
+  stream.close();
 
   return string();
  }
@@ -65,6 +66,7 @@ string LinuxParser::OperatingSystem() {
       }
     }
   }
+  filestream.close();
   return value;
 }
 
@@ -78,6 +80,7 @@ string LinuxParser::Kernel() {
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
   }
+  stream.close();
   return kernel;
 }
 
@@ -130,6 +133,7 @@ float LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> up_time >> idle_time;
   }
+  stream.close();
 
   return up_time;
 }
@@ -163,8 +167,8 @@ vector<string> LinuxParser::CpuUtilization() {
         return cpu;
       }
     }
-    // throw std::invalid_argument("Could not find key cpu in stream.");
   }
+  stream.close();
 
   return {}; }
 
@@ -208,6 +212,7 @@ string LinuxParser::Command(int pid) {
       return command;
     }
   }
+  stream.close();
 
   return string(); }
 
@@ -252,6 +257,7 @@ string LinuxParser::User(int pid) {
         }
       }
     }
+    stream.close();
   }
 
 
@@ -271,6 +277,7 @@ vector<string> LinuxParser::ProcessStatusses(int pid) {
       process_status = LinuxParser::StringToVector(line, delimeter);
     }
   }
+  stream.close();
 
   return process_status; }
 
@@ -329,6 +336,7 @@ long LinuxParser::UpTime(int pid) {
       stat = LinuxParser::StringToVector(line, delimeter);
     }
   }
+  stream.close();
 
   starttime = std::stol(stat[LinuxParser::ProcessStates::kStartTime_]);
 
