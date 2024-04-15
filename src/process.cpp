@@ -40,7 +40,20 @@ void Process::SetCpuUtilization() {
 float Process::GetCpuUtilization(){ return this->cpu_usage_; };
 
 // DONE: Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(this->pid_); }
+string Process::Command() {
+
+    // Cut the command off if it is longer than 50 characters
+    string full_command = LinuxParser::Command(this->pid_);
+    int command_length = full_command.length();
+    int max_length = 50;
+    if (command_length > max_length){
+        int nr_dots = std::min(3, command_length - max_length);
+        std::string dots(nr_dots, '.');
+        string command = full_command.substr(0, max_length - nr_dots) + dots;
+        return command;
+        }
+    return full_command;
+    }
 
 // DONE: Return this process's memory utilization
 string Process::Ram() { return LinuxParser::Ram(this->pid_); }
