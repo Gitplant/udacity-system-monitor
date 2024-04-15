@@ -8,10 +8,16 @@ using std::string;
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
 string Format::ElapsedTime(long seconds) {
-    long int hh = seconds / 60 / 60;
-    long int mm = (seconds - hh * 60 * 60) / 60;
-    long int ss = seconds - hh * 60 * 60 - mm * 60;
-    string elapsed_time = Format::LeadingZeros(hh) + ":" + Format::LeadingZeros(mm) + ":" + Format::LeadingZeros(ss);
+    string elapsed_time;
+    if (seconds > 0){
+        long int hh = seconds / 60 / 60;
+        long int mm = (seconds - hh * 60 * 60) / 60;
+        long int ss = seconds - hh * 60 * 60 - mm * 60;
+        elapsed_time = Format::LeadingZeros(hh) + ":" + Format::LeadingZeros(mm) + ":" + Format::LeadingZeros(ss);
+    }
+    else{
+        elapsed_time = "-";
+    }
     return elapsed_time; }
 
 string Format::LeadingZeros(long int number){

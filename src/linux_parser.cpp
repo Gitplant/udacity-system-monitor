@@ -274,10 +274,52 @@ vector<string> LinuxParser::ProcessStatusses(int pid) {
 
   return process_status; }
 
+//Convert to kernel version to a vector of ints
+std::vector<int> LinuxParser::KernelToInt(string kernel){
+  std::vector<int> splitted_kernel;
+
+  std::string temp;
+  for (char c : kernel){
+    if (std::isdigit(c)){
+      temp += c;
+    }
+    else{
+      if (!temp.empty()){
+        splitted_kernel.push_back(std::stoi(temp));
+        temp.clear();
+      }
+    }
+  }
+  if (!temp.empty()){
+        splitted_kernel.push_back(std::stoi(temp));
+      }
+  return splitted_kernel;
+}
+
+//Compare if kernel1 has a higher version than kernel2
+bool LinuxParser::CompareKernelVersions(string kernel1, string kernel2){
+
+  std::vector<int> splitted_kernel1 = LinuxParser::KernelToInt(kernel1);
+  std::vector<int> splitted_kernel2 = LinuxParser::KernelToInt(kernel2);
+
+  int minimum_length = std::min(splitted_kernel1.size(), splitted_kernel2.size());
+
+  for(int i=0 ; i<minimum_length ; i++){
+    if (splitted_kernel1[i] > splitted_kernel2[i]){
+      return true;
+    }
+    else if (splitted_kernel1[i] < splitted_kernel2[i]){
+      return false;
+    }
+  }
+
+  return false;
+}
+
 // DONE: Read and return the uptime of a process
 long LinuxParser::UpTime(int pid) {
 
-  long uptime;
+  long uptime, starttime;
   string line;
   vector<string> stat;
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
@@ -287,7 +329,19 @@ long LinuxParser::UpTime(int pid) {
       stat = LinuxParser::StringToVector(line, delimeter);
     }
   }
-  uptime = std::stol(stat[LinuxParser::ProcessStates::kStartTime_]) / LinuxParser::clock_frequency;
+
+  starttime = std::stol(stat[LinuxParser::ProcessStates::kStartTime_]);
+
+  string kernel = LinuxParser::Kernel();
+
+  bool new_kernel = LinuxParser::CompareKernelVersions(kernel, "2.6");
+  if (new_kernel){
+    uptime = starttime / LinuxParser::clock_frequency;
+  }
+  else{
+    uptime = 0;
+  }
 
   return uptime;
+
 }
