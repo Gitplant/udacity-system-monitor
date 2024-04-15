@@ -303,7 +303,7 @@ std::vector<int> LinuxParser::KernelToInt(string kernel){
   return splitted_kernel;
 }
 
-//Compare if kernel1 has a higher version than kernel2
+//Compare if the version of kernel1 >= kernel2
 bool LinuxParser::CompareKernelVersions(string kernel1, string kernel2){
 
   std::vector<int> splitted_kernel1 = LinuxParser::KernelToInt(kernel1);
@@ -320,7 +320,7 @@ bool LinuxParser::CompareKernelVersions(string kernel1, string kernel2){
     }
   }
 
-  return false;
+  return true;
 }
 
 // DONE: Read and return the uptime of a process
